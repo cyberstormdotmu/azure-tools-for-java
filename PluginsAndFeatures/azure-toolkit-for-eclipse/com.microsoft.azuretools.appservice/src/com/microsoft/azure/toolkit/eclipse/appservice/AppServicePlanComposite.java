@@ -20,7 +20,7 @@ import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;
 import com.microsoft.azure.toolkit.lib.appservice.model.PricingTier;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 
-public class CreateWebAppAppServicePlanComposite extends Composite {
+public class AppServicePlanComposite extends Composite {
 
     private final ServicePlanCombobox cbServicePlan;
     private final Label textSku;
@@ -36,7 +36,7 @@ public class CreateWebAppAppServicePlanComposite extends Composite {
      * @param parent
      * @param style
      */
-    public CreateWebAppAppServicePlanComposite(Composite parent, int style) {
+    public AppServicePlanComposite(Composite parent, int style) {
         super(parent, style);
         setLayout(new GridLayout(2, false));
 

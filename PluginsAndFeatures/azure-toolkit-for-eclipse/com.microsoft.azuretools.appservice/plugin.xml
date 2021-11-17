@@ -25,7 +25,7 @@
       
       <handler
             commandId="com.microsoft.azuretools.appservice.commands.createWebApp"
-            class="com.microsoft.azure.toolkit.eclipse.webapp.handlers.CreateWebAppHandler">
+            class="com.microsoft.azure.toolkit.eclipse.webapp.creation.CreateWebAppHandler">
       </handler>
    </extension>
    

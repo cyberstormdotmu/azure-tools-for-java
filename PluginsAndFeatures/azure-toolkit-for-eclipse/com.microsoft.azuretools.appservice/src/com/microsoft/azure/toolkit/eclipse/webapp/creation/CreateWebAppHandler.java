@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.azure.toolkit.eclipse.webapp.handlers;
+package com.microsoft.azure.toolkit.eclipse.webapp.creation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.azure.core.management.AzureEnvironment;
-import com.microsoft.azure.toolkit.eclipse.appservice.CreateWebAppDialog;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig;
 import com.microsoft.azure.toolkit.lib.appservice.config.RuntimeConfig;

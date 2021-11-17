@@ -27,7 +27,7 @@ import com.microsoft.azure.toolkit.lib.common.form.AzureValidationInfo;
 import com.microsoft.azure.toolkit.lib.common.model.Region;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 
-public class CreateWebAppInstanceDetailComposite extends Composite {
+public class AppServiceInstanceDetailComposite extends Composite {
     private final RuntimeComboBox cbRuntime;
     private final RegionComboBox cbRegion;
     private AzureTextInput text;
@@ -55,7 +55,7 @@ public class CreateWebAppInstanceDetailComposite extends Composite {
      * @param parent
      * @param style
      */
-    public CreateWebAppInstanceDetailComposite(Composite parent, int style) {
+    public AppServiceInstanceDetailComposite(Composite parent, int style) {
         super(parent, style);
         setLayout(new GridLayout(3, false));
 
