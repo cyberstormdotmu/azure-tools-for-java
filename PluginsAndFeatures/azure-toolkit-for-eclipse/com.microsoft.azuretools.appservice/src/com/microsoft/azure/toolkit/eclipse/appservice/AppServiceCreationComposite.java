@@ -5,9 +5,11 @@
 
 package com.microsoft.azure.toolkit.eclipse.appservice;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,14 +34,15 @@ import com.microsoft.azure.toolkit.lib.common.model.Region;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 import org.eclipse.swt.layout.GridLayout;
 
-public class AppServiceCreationComposite extends Composite implements AzureForm<AppServiceConfig> {
+public class AppServiceCreationComposite<T extends AppServiceConfig> extends Composite implements AzureForm<T> {
+    private Supplier<T> supplier;
     private AppServiceInstanceDetailComposite instanceDetailPanel;
     private SubscriptionAndResourceGroupComposite subsAndResourceGroupPanel;
     private AppServicePlanComposite appServicePlanPanel;
-    
-    public AppServiceCreationComposite(Composite parent, int style) {
-        super(parent, style);
         
+    public AppServiceCreationComposite(Composite parent, int style,  Supplier<T> supplier) {
+        super(parent, style);
+        this.supplier = supplier;
         setupUI();
     }
 
@@ -84,29 +87,36 @@ public class AppServiceCreationComposite extends Composite implements AzureForm<
             }
 
         });
-//        subscriptionComboBox.refreshItems();
+        subscriptionComboBox.refreshItems();
     }
 
+    public void setRuntime(final List<Runtime> platformList) {
+        instanceDetailPanel.getRuntimeComboBox().setPlatformList(platformList);
+    }
+    
     @Override
     protected void checkSubclass() {
     }
 
     @Override
-    public AppServiceConfig getValue() {
+    public T getValue() {
         final AppServicePlanEntity entity = appServicePlanPanel.getServicePlan();
-        return new AppServiceConfig().subscriptionId(subsAndResourceGroupPanel.getSubscription().getId())
-                .resourceGroup(subsAndResourceGroupPanel.getResourceGroup().getName())
-                .appName(instanceDetailPanel.getAppName())
-                .region(instanceDetailPanel.getResourceRegion())
-                .runtime(instanceDetailPanel.getRuntime())
-                .servicePlanName(entity.getName())
-                .servicePlanResourceGroup(StringUtils.firstNonBlank(entity.getResourceGroup(),
-                        subsAndResourceGroupPanel.getResourceGroup().getName()))
-                .pricingTier(entity.getPricingTier());
+        final T result = supplier.get();
+        result.subscriptionId(subsAndResourceGroupPanel.getSubscription().getId());
+        result.resourceGroup(subsAndResourceGroupPanel.getResourceGroup().getName());
+        result.appName(instanceDetailPanel.getAppName());
+        result.region(instanceDetailPanel.getResourceRegion());
+        result.runtime(instanceDetailPanel.getRuntime());
+        result.servicePlanName(entity.getName());
+        result.servicePlanResourceGroup(StringUtils.firstNonBlank(entity.getResourceGroup(),
+                subsAndResourceGroupPanel.getResourceGroup().getName()));
+        result.pricingTier(entity.getPricingTier());
+        result.appSettings(new HashMap<>());
+        return result;
     }
 
     @Override
-    public void setValue(AppServiceConfig config) {
+    public void setValue(T config) {
         Optional.ofNullable(config.subscriptionId()).ifPresent(
                 subscription -> subsAndResourceGroupPanel.getSubscriptionComboBox().setValue(new ItemReference<>(
                         value -> StringUtils.equalsIgnoreCase(value.getId(), config.subscriptionId()))));

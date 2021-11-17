@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.azure.toolkit.eclipse.webapp.creation;
+package com.microsoft.azure.toolkit.eclipse.functionapp.creation;
 
 import java.util.Optional;
 
@@ -15,15 +15,21 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.microsoft.azure.toolkit.eclipse.appservice.AppServiceCreationComposite;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureDialog;
-import com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig;
+import com.microsoft.azure.toolkit.lib.appservice.config.FunctionAppConfig;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
+import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
 
-public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
-    private AppServiceConfig config;
-    private AppServiceCreationComposite<AppServiceConfig> composite;
+public class CreateFunctionAppDialog extends AzureDialog<FunctionAppConfig> {
+    private FunctionAppConfig config;
+    private AppServiceCreationComposite<FunctionAppConfig> composite;
 
-    public CreateWebAppDialog(Shell parentShell, AppServiceConfig config) {
+    /**
+     * Create the dialog.
+     *
+     * @param parentShell
+     */
+    public CreateFunctionAppDialog(Shell parentShell, FunctionAppConfig config) {
         super(parentShell);
         this.config = config;
         setShellStyle(SWT.SHELL_TRIM);
@@ -32,7 +38,8 @@ public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
-        this.composite = new AppServiceCreationComposite<AppServiceConfig>(container, SWT.NONE, AppServiceConfig::new);
+        this.composite = new AppServiceCreationComposite<FunctionAppConfig>(container, SWT.NONE, FunctionAppConfig::new);
+        this.composite.setRuntime(Runtime.FUNCTION_APP_RUNTIME);
         this.composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
         return container;
     }
@@ -43,13 +50,14 @@ public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
     }
 
     @Override
-    public AzureForm<AppServiceConfig> getForm() {
+    public AzureForm<FunctionAppConfig> getForm() {
         return this.composite;
     }
 
     @Override
     public int open() {
-        Optional.ofNullable(config).ifPresent(config -> AzureTaskManager.getInstance().runLater(() -> this.composite.setValue(config)));
+        Optional.ofNullable(config)
+                .ifPresent(config -> AzureTaskManager.getInstance().runLater(() -> composite.setValue(config)));
         return super.open();
     }
 
