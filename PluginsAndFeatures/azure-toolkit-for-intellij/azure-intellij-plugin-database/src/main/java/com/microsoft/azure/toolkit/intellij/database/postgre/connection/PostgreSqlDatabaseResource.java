@@ -5,18 +5,24 @@
 package com.microsoft.azure.toolkit.intellij.database.postgre.connection;
 
 import com.azure.resourcemanager.resources.fluentcore.arm.ResourceId;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.microsoft.azure.toolkit.ide.common.action.ResourceCommonActionsContributor;
 import com.microsoft.azure.toolkit.intellij.connector.AzureServiceResource;
 import com.microsoft.azure.toolkit.intellij.connector.Password;
 import com.microsoft.azure.toolkit.intellij.connector.PasswordStore;
 import com.microsoft.azure.toolkit.intellij.connector.database.Database;
 import com.microsoft.azure.toolkit.intellij.connector.database.DatabaseConnectionUtils;
 import com.microsoft.azure.toolkit.intellij.connector.database.component.PasswordDialog;
+import com.microsoft.azure.toolkit.lib.Azure;
+import com.microsoft.azure.toolkit.lib.common.action.AzureActionManager;
 import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
 import com.microsoft.azure.toolkit.lib.common.operation.AzureOperationBundle;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azure.toolkit.lib.database.JdbcUrl;
+import com.microsoft.azure.toolkit.lib.postgre.AzurePostgreSql;
 import com.microsoft.azure.toolkit.lib.postgre.PostgreSqlDatabase;
+import com.microsoft.azure.toolkit.lib.postgre.PostgreSqlServer;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +58,13 @@ public class PostgreSqlDatabaseResource extends AzureServiceResource<PostgreSqlD
         ResourceId resourceId = ResourceId.fromString(id);
         this.database = new Database(resourceId.parent().id(), resourceId.name());
         this.database.setUsername(username);
+    }
+
+    @Override
+    public void navigate(AnActionEvent event) {
+        final ResourceId parent = ResourceId.fromString(this.getDataId()).parent();
+        final PostgreSqlServer postgreSqlServer = Azure.az(AzurePostgreSql.class).get(parent.subscriptionId(), parent.resourceGroupName(), parent.name());
+        AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.SHOW_PROPERTIES).handle(postgreSqlServer, event);
     }
 
     public String loadPassword() {
