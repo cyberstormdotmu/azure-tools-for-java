@@ -12,7 +12,7 @@ import com.microsoft.azure.toolkit.intellij.legacy.appservice.AppServiceInfoBasi
 import com.microsoft.azure.toolkit.intellij.common.AzureFormPanel;
 import com.microsoft.azure.toolkit.intellij.common.ConfigDialog;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
-import com.microsoft.azure.toolkit.lib.legacy.function.FunctionAppConfig;
+import com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppConfig;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -54,7 +54,7 @@ public class FunctionAppCreationDialog extends ConfigDialog<FunctionAppConfig> {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        basicPanel = new AppServiceInfoBasicPanel<>(project, FunctionAppConfig::getFunctionAppDefaultConfig) {
+        basicPanel = new AppServiceInfoBasicPanel<FunctionAppConfig>(project, () -> FunctionAppConfig.getFunctionAppDefaultConfig(project.getName())) {
             @Override
             public FunctionAppConfig getValue() {
                 // Create AI instance with same name by default

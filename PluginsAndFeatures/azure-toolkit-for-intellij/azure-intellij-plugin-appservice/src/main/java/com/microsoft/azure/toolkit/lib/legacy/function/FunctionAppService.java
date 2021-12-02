@@ -6,6 +6,7 @@ package com.microsoft.azure.toolkit.lib.legacy.function;
 
 import com.azure.core.management.AzureEnvironment;
 import com.azure.core.management.exception.ManagementException;
+import com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppConfig;
 import com.microsoft.azure.toolkit.ide.appservice.model.ApplicationInsightsConfig;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.applicationinsights.ApplicationInsights;

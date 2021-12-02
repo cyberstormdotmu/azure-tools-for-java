@@ -6,10 +6,14 @@
 package com.microsoft.azure.toolkit.ide.appservice.webapp.model;
 
 import com.microsoft.azure.toolkit.ide.appservice.model.AppServiceConfig;
+import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
+import com.microsoft.azure.toolkit.lib.Azure;
+import com.microsoft.azure.toolkit.lib.account.IAzureAccount;
 import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;
 import com.microsoft.azure.toolkit.lib.appservice.model.PricingTier;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
 import com.microsoft.azure.toolkit.lib.appservice.service.impl.WebApp;
+import com.microsoft.azure.toolkit.lib.common.model.Region;
 import com.microsoft.azure.toolkit.lib.common.model.ResourceGroup;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 import lombok.AllArgsConstructor;
@@ -19,6 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,10 +40,27 @@ public class WebAppConfig extends AppServiceConfig {
     protected Runtime runtime = DEFAULT_RUNTIME;
 
     public static WebAppConfig getWebAppDefaultConfig() {
+        return getWebAppDefaultConfig(StringUtils.EMPTY);
+    }
+
+    public static WebAppConfig getWebAppDefaultConfig(final String name) {
+        final String appName = StringUtils.isEmpty(name) ? String.format("app-%s", DATE_FORMAT.format(new Date())) :
+                String.format("app-%s-%s", name, DATE_FORMAT.format(new Date()));
+        final Subscription subscription = Azure.az(IAzureAccount.class).account().getSelectedSubscriptions().stream().findFirst().orElse(null);
+        final DraftResourceGroup group = new DraftResourceGroup(subscription, StringUtils.substring(String.format("rg-%s", appName), 0, RG_NAME_MAX_LENGTH));
+        group.setSubscription(subscription);
+        final Region region = AppServiceConfig.getDefaultRegion();
+        final String planName = StringUtils.substring(String.format("sp-%s", appName), 0, SP_NAME_MAX_LENGTH);
+        final DraftServicePlan plan = new DraftServicePlan(subscription, planName, region, WebAppConfig.DEFAULT_RUNTIME.getOperatingSystem(),
+                WebAppConfig.DEFAULT_PRICING_TIER);
         return WebAppConfig.builder()
-                           .runtime(WebAppConfig.DEFAULT_RUNTIME)
-                           .pricingTier(WebAppConfig.DEFAULT_PRICING_TIER)
-                           .region(AppServiceConfig.getDefaultRegion()).build();
+                .subscription(subscription)
+                .resourceGroup(group)
+                .name(appName)
+                .servicePlan(plan)
+                .runtime(WebAppConfig.DEFAULT_RUNTIME)
+                .pricingTier(WebAppConfig.DEFAULT_PRICING_TIER)
+                .region(region).build();
     }
 
     public static WebAppConfig fromRemote(WebApp webApp) {

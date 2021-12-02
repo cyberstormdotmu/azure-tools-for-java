@@ -24,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +37,9 @@ import java.util.Optional;
 @EqualsAndHashCode
 @SuperBuilder(toBuilder = true)
 public abstract class AppServiceConfig {
+    protected static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmss");
+    protected static final int RG_NAME_MAX_LENGTH = 90;
+    protected static final int SP_NAME_MAX_LENGTH = 40;
     @Builder.Default
     private MonitorConfig monitorConfig = MonitorConfig.builder().build();
     private String name;

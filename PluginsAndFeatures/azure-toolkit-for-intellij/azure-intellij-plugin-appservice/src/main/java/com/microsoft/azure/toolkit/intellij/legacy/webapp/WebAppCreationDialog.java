@@ -59,7 +59,7 @@ public class WebAppCreationDialog extends ConfigDialog<WebAppConfig> {
         // TODO: place custom component creation code here
         advancedForm = new WebAppConfigFormPanelAdvance(project);
 
-        basicForm = new AppServiceInfoBasicPanel(project, WebAppConfig::getWebAppDefaultConfig);
+        basicForm = new AppServiceInfoBasicPanel(project, () -> WebAppConfig.getWebAppDefaultConfig(project.getName()));
         basicForm.setDeploymentVisible(false);
     }
 }

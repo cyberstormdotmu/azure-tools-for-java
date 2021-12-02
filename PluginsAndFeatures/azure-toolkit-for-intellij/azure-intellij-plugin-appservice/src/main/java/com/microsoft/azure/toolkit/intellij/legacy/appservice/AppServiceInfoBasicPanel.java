@@ -13,8 +13,6 @@ import com.microsoft.azure.toolkit.intellij.common.AzureArtifact;
 import com.microsoft.azure.toolkit.intellij.common.AzureArtifactComboBox;
 import com.microsoft.azure.toolkit.intellij.common.AzureArtifactManager;
 import com.microsoft.azure.toolkit.intellij.common.AzureFormPanel;
-import com.microsoft.azure.toolkit.intellij.common.DraftResourceGroup;
-import com.microsoft.azure.toolkit.lib.legacy.appservice.DraftServicePlan;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
 import com.microsoft.azure.toolkit.lib.auth.AzureAccount;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
@@ -27,7 +25,6 @@ import javax.swing.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -75,7 +72,7 @@ public class AppServiceInfoBasicPanel<T extends AppServiceConfig> extends JPanel
             return StringUtils.isNotBlank(ext) && isSupportedArtifactType(platform, ext);
         });
         this.setDeploymentVisible(false);
-        this.config = initConfig();
+        this.config = supplier.get();
         setValue(this.config);
 
         this.lblName.setLabelFor(textName);
@@ -90,7 +87,7 @@ public class AppServiceInfoBasicPanel<T extends AppServiceConfig> extends JPanel
         final Runtime platform = this.selectorRuntime.getValue();
         final AzureArtifact artifact = this.selectorApplication.getValue();
 
-        final T result = (T) (this.config == null ? initConfig() : this.config);
+        final T result = this.config == null ? supplier.get() : this.config;
         result.setName(name);
         result.setRuntime(platform);
 
@@ -100,22 +97,6 @@ public class AppServiceInfoBasicPanel<T extends AppServiceConfig> extends JPanel
             result.setApplication(Paths.get(path));
         }
         this.config = result;
-        return result;
-    }
-
-    private T initConfig() {
-        final String appName = String.format("app-%s-%s", this.project.getName(), DATE_FORMAT.format(new Date()));
-        final DraftResourceGroup group = new DraftResourceGroup(subscription, StringUtils.substring(String.format("rg-%s", appName), 0, RG_NAME_MAX_LENGTH));
-        group.setSubscription(subscription);
-        final T result = supplier.get(); // need platform region pricing
-        final String planName = StringUtils.substring(String.format("sp-%s", appName), 0, SP_NAME_MAX_LENGTH);
-        final DraftServicePlan plan = new DraftServicePlan(subscription, planName, result.getRegion(), result.getRuntime().getOperatingSystem(),
-                result.getPricingTier());
-        result.setName(appName);
-        result.setResourceGroup(group);
-        result.setSubscription(subscription);
-        result.setResourceGroup(group);
-        result.setServicePlan(plan);
         return result;
     }
 
