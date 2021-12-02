@@ -22,7 +22,7 @@ import com.intellij.util.xmlb.XmlSerializer;
 import com.microsoft.azure.toolkit.intellij.legacy.common.AzureRunConfigurationBase;
 import com.microsoft.azure.toolkit.intellij.legacy.function.runner.core.FunctionUtils;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
-import com.microsoft.azure.toolkit.lib.legacy.function.FunctionAppConfig;
+import com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;

@@ -7,7 +7,7 @@ package com.microsoft.azure.toolkit.intellij.common.component.resourcegroup;
 
 import com.intellij.ui.components.JBLabel;
 import com.microsoft.azure.toolkit.intellij.common.AzureDialog;
-import com.microsoft.azure.toolkit.intellij.common.DraftResourceGroup;
+import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.intellij.common.SwingUtils;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;

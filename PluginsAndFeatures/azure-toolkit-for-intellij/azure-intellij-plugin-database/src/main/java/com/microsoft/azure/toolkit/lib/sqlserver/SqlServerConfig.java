@@ -5,7 +5,7 @@
 
 package com.microsoft.azure.toolkit.lib.sqlserver;
 
-import com.microsoft.azure.toolkit.intellij.common.DraftResourceGroup;
+import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.appservice.utils.Utils;
 import com.microsoft.azure.toolkit.lib.common.model.Region;

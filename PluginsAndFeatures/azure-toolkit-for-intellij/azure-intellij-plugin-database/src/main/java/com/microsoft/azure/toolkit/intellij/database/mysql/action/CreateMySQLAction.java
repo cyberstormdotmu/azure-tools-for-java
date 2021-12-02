@@ -8,7 +8,7 @@ package com.microsoft.azure.toolkit.intellij.database.mysql.action;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.microsoft.azure.toolkit.intellij.common.Draft;
+import com.microsoft.azure.toolkit.ide.common.model.Draft;
 import com.microsoft.azure.toolkit.intellij.database.mysql.creation.MySQLCreationDialog;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
