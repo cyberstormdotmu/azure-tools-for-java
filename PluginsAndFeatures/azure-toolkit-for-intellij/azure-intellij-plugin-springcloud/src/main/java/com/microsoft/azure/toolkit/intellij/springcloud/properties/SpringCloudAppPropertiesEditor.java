@@ -164,8 +164,8 @@ public class SpringCloudAppPropertiesEditor extends BaseEditor {
         this.stopButton.setEnabled(enabled);
         this.restartButton.setEnabled(enabled);
         this.deleteButton.setEnabled(enabled);
-        this.formConfig.setEnabled(enabled);
-        this.panelInstances.setEnabled(enabled);
+        this.formConfig.setEnabled(enabled && this.app.isStoppable());
+        this.panelInstances.setEnabled(enabled && this.app.isStoppable());
     }
 
     private void resetToolbar(@Nullable SpringCloudDeployment deployment) {
