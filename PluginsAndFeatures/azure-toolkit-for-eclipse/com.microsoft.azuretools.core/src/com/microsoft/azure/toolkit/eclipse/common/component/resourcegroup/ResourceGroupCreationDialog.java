@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import com.microsoft.azure.CloudException;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureDialog;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureTextInput;
+import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
@@ -85,7 +86,7 @@ public class ResourceGroupCreationDialog extends AzureDialog<DraftResourceGroup>
 
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            this.data = new DraftResourceGroup(this.textName.getText());
+            this.data = new DraftResourceGroup(subscription, this.textName.getText());
         }
         super.buttonPressed(buttonId);
     }

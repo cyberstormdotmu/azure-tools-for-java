@@ -15,15 +15,15 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.microsoft.azure.toolkit.eclipse.appservice.AppServiceCreationComposite;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureDialog;
-import com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig;
+import com.microsoft.azure.toolkit.ide.appservice.webapp.model.WebAppConfig;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 
-public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
-    private AppServiceConfig config;
-    private AppServiceCreationComposite<AppServiceConfig> composite;
+public class CreateWebAppDialog extends AzureDialog<WebAppConfig> {
+    private WebAppConfig config;
+    private AppServiceCreationComposite<WebAppConfig> composite;
 
-    public CreateWebAppDialog(Shell parentShell, AppServiceConfig config) {
+    public CreateWebAppDialog(Shell parentShell, WebAppConfig config) {
         super(parentShell);
         this.config = config;
         setShellStyle(SWT.SHELL_TRIM);
@@ -32,7 +32,7 @@ public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
-        this.composite = new AppServiceCreationComposite<AppServiceConfig>(container, SWT.NONE, AppServiceConfig::new);
+        this.composite = new AppServiceCreationComposite<WebAppConfig>(container, SWT.NONE, WebAppConfig::new);
         this.composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
         return container;
     }
@@ -43,7 +43,7 @@ public class CreateWebAppDialog extends AzureDialog<AppServiceConfig> {
     }
 
     @Override
-    public AzureForm<AppServiceConfig> getForm() {
+    public AzureForm<WebAppConfig> getForm() {
         return this.composite;
     }
 

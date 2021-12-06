@@ -7,7 +7,6 @@ package com.microsoft.azure.toolkit.eclipse.appservice;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -17,23 +16,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import com.microsoft.azure.toolkit.eclipse.appservice.serviceplan.DraftServicePlan;
+import com.microsoft.azure.toolkit.eclipse.common.component.AzureComboBox.ItemReference;
 import com.microsoft.azure.toolkit.eclipse.common.component.SubscriptionAndResourceGroupComposite;
 import com.microsoft.azure.toolkit.eclipse.common.component.SubscriptionComboBox;
-import com.microsoft.azure.toolkit.eclipse.common.component.AzureComboBox.ItemReference;
-import com.microsoft.azure.toolkit.eclipse.common.component.resourcegroup.DraftResourceGroup;
-import com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig;
+import com.microsoft.azure.toolkit.ide.appservice.model.AppServiceConfig;
+import com.microsoft.azure.toolkit.lib.appservice.config.RuntimeConfig;
 import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 import com.microsoft.azure.toolkit.lib.common.model.Region;
-import com.microsoft.azure.toolkit.lib.common.model.ResourceGroup;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
-import org.eclipse.swt.layout.GridLayout;
 
 public class AppServiceCreationComposite<T extends AppServiceConfig> extends Composite implements AzureForm<T> {
     private Supplier<T> supplier;
@@ -101,41 +98,35 @@ public class AppServiceCreationComposite<T extends AppServiceConfig> extends Com
 
     @Override
     public T getValue() {
-        final AppServicePlanEntity entity = appServicePlanPanel.getServicePlan();
         final T result = supplier.get();
-        result.subscriptionId(
-                Optional.ofNullable(subsAndResourceGroupPanel.getSubscription()).map(Subscription::getId).orElse(null));
-        result.resourceGroup(Optional.ofNullable(subsAndResourceGroupPanel.getResourceGroup())
-                .map(ResourceGroup::getName).orElse(null));
-        result.appName(instanceDetailPanel.getAppName());
-        result.region(instanceDetailPanel.getResourceRegion());
-        result.runtime(instanceDetailPanel.getRuntime());
-        result.servicePlanName(entity.getName());
-        result.servicePlanResourceGroup(StringUtils.firstNonBlank(entity.getResourceGroup(), result.resourceGroup()));
-        result.pricingTier(entity.getPricingTier());
-        result.appSettings(new HashMap<>());
+        final RuntimeConfig runtime = instanceDetailPanel.getRuntime();
+        result.setSubscription(subsAndResourceGroupPanel.getSubscription());
+        result.setResourceGroup(subsAndResourceGroupPanel.getResourceGroup());
+        result.setName(instanceDetailPanel.getAppName());
+        result.setRegion(instanceDetailPanel.getResourceRegion());
+        result.setRuntime(Runtime.getRuntime(runtime.os(), runtime.webContainer(), runtime.javaVersion()));
+        result.setServicePlan(appServicePlanPanel.getServicePlan());
+        result.setPricingTier(Optional.ofNullable(appServicePlanPanel.getServicePlan())
+                .map(AppServicePlanEntity::getPricingTier).orElse(null));
+        result.setAppSettings(new HashMap<>());
         return result;
     }
 
     @Override
     public void setValue(T config) {
-        Optional.ofNullable(config.subscriptionId()).ifPresent(
+        Optional.ofNullable(config.getSubscription()).ifPresent(
                 subscription -> subsAndResourceGroupPanel.getSubscriptionComboBox().setValue(new ItemReference<>(
-                        value -> StringUtils.equalsIgnoreCase(value.getId(), config.subscriptionId()))));
-        Optional.ofNullable(config.resourceGroup()).ifPresent(resourceGroup -> subsAndResourceGroupPanel
-                .getResourceGroupComboBox().setValue(new DraftResourceGroup(resourceGroup)));
-        Optional.ofNullable(config.appName())
+                        value -> StringUtils.equalsIgnoreCase(value.getId(), subscription.getId()))));
+        Optional.ofNullable(config.getResourceGroup()).ifPresent(
+                resourceGroup -> subsAndResourceGroupPanel.getResourceGroupComboBox().setValue(resourceGroup));
+        Optional.ofNullable(config.getName())
                 .ifPresent(name -> instanceDetailPanel.getWebAppNameInput().setValue(name));
-        Optional.ofNullable(config.region())
+        Optional.ofNullable(config.getRegion())
                 .ifPresent(region -> instanceDetailPanel.getRegionComboBox().setValue(region));
-        Optional.ofNullable(config.runtime())
-                .ifPresent(runtime -> instanceDetailPanel.getRuntimeComboBox()
-                        .setValue(new ItemReference<>(value -> Objects.equals(runtime.os(), value.getOperatingSystem())
-                                && Objects.equals(runtime.webContainer(), value.getWebContainer())
-                                && Objects.equals(runtime.javaVersion(), value.getJavaVersion()))));
-        Optional.ofNullable(config.getServicePlanConfig())
-                .ifPresent(servicePlan -> appServicePlanPanel.getServicePlanCombobox()
-                        .setValue(new DraftServicePlan(servicePlan.servicePlanName(), servicePlan.pricingTier())));
+        Optional.ofNullable(config.getRuntime())
+                .ifPresent(runtime -> instanceDetailPanel.getRuntimeComboBox().setValue(runtime));
+        Optional.ofNullable(config.getServicePlan())
+                .ifPresent(servicePlan -> appServicePlanPanel.getServicePlanCombobox().setValue(servicePlan));
     }
 
     @Override

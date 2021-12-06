@@ -5,13 +5,18 @@
 
 package com.microsoft.azure.toolkit.eclipse.common.component;
 
-import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
-import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
-import com.microsoft.azure.toolkit.lib.common.task.AzureTask;
-import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
-import com.microsoft.azure.toolkit.lib.common.utils.TailingDebouncer;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.InterruptedIOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -23,21 +28,20 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.InterruptedIOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import com.microsoft.azure.toolkit.ide.common.model.Draft;
+import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
+import com.microsoft.azure.toolkit.lib.common.task.AzureTask;
+import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
+import com.microsoft.azure.toolkit.lib.common.utils.TailingDebouncer;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class AzureComboBox<T> extends Composite implements AzureFormInputControl<T> {
     public static final String EMPTY_ITEM = StringUtils.EMPTY;
     private static final int DEBOUNCE_DELAY = 300;
-    private Object value;
+    protected Object value;
     private boolean valueNotSet = true;
     protected boolean enabled = true;
     @Getter

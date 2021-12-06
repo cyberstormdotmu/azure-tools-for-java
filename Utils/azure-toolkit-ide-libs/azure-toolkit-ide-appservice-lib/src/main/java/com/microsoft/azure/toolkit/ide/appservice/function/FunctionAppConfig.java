@@ -10,6 +10,7 @@ import com.microsoft.azure.toolkit.ide.appservice.webapp.model.DraftServicePlan;
 import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.account.IAzureAccount;
+import com.microsoft.azure.toolkit.lib.appservice.config.RuntimeConfig;
 import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;
 import com.microsoft.azure.toolkit.lib.appservice.model.JavaVersion;
 import com.microsoft.azure.toolkit.lib.appservice.model.OperatingSystem;
@@ -65,6 +66,23 @@ public class FunctionAppConfig extends AppServiceConfig {
                 .runtime(FunctionAppConfig.DEFAULT_RUNTIME)
                 .pricingTier(PricingTier.CONSUMPTION)
                 .region(region).build();
+    }
+
+    public static com.microsoft.azure.toolkit.lib.appservice.config.FunctionAppConfig convertToTaskConfig(FunctionAppConfig config) {
+        final com.microsoft.azure.toolkit.lib.appservice.config.FunctionAppConfig result =
+                new com.microsoft.azure.toolkit.lib.appservice.config.FunctionAppConfig();
+        result.appName(config.getName());
+        result.resourceGroup(config.getResourceGroupName());
+        result.subscriptionId(config.getSubscriptionId());
+        result.pricingTier(Optional.ofNullable(config.getServicePlan()).map(AppServicePlanEntity::getPricingTier).orElseGet(config::getPricingTier));
+        result.region(config.getRegion());
+        result.servicePlanName(Optional.ofNullable(config.getServicePlan()).map(AppServicePlanEntity::getName).orElse(null));
+        result.servicePlanResourceGroup(Optional.ofNullable(config.getServicePlan())
+                .map(AppServicePlanEntity::getResourceGroup).orElseGet(config::getResourceGroupName));
+        Optional.ofNullable(config.getRuntime()).ifPresent(runtime -> result.runtime(
+                new RuntimeConfig().os(runtime.getOperatingSystem()).javaVersion(runtime.getJavaVersion()).webContainer(runtime.getWebContainer())));
+        result.appSettings(config.getAppSettings());
+        return result;
     }
 
     @Override

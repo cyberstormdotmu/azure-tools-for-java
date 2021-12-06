@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.microsoft.azure.toolkit.eclipse.appservice.AppServiceCreationComposite;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureDialog;
-import com.microsoft.azure.toolkit.lib.appservice.config.FunctionAppConfig;
+import com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppConfig;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
