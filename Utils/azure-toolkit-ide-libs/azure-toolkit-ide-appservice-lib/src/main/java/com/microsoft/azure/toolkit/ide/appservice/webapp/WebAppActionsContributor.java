@@ -57,6 +57,8 @@ public class WebAppActionsContributor implements IActionsContributor {
                 ResourceCommonActionsContributor.RESTART,
                 ResourceCommonActionsContributor.DELETE,
                 "---",
+                AppServiceActionsContributor.PROFILE_FLIGHT_RECORD,
+                AppServiceActionsContributor.SSH_INTO_WEBAPP,
                 AppServiceActionsContributor.START_STREAM_LOG,
                 AppServiceActionsContributor.STOP_STREAM_LOG
                 // todo: add profile actions like log streaming
@@ -87,7 +89,7 @@ public class WebAppActionsContributor implements IActionsContributor {
     public void registerActions(AzureActionManager am) {
         final Consumer<WebApp> refresh = webApp -> AzureEventBus.emit("appservice|webapp.slot.refresh", webApp);
         final ActionView.Builder refreshView = new ActionView.Builder("Refresh", "/icons/action/refresh.svg")
-                .title(s -> Optional.ofNullable(s).map(r -> title("appservice|webapp.slot.refresh", ((WebApp) r).name())).orElse(null))
+                .title(s -> Optional.ofNullable(s).map(r -> title("webapp.list_deployments.app", ((WebApp) r).name())).orElse(null))
                 .enabled(s -> s instanceof WebApp);
         am.registerAction(REFRESH_DEPLOYMENT_SLOTS, new Action<>(refresh, refreshView));
 

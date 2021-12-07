@@ -1,0 +1,10 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.microsoft.tooling.msservices.intellij.azure">
+        <azureExplorerContributor implementation="com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppExplorerContributor"/>
+        <azureExplorerContributor implementation="com.microsoft.azure.toolkit.ide.appservice.webapp.WebAppExplorerContributor"/>
+        <actions implementation="com.microsoft.azure.toolkit.ide.appservice.AppServiceActionsContributor"/>
+        <actions implementation="com.microsoft.azure.toolkit.ide.appservice.webapp.WebAppActionsContributor"/>
+        <actions implementation="com.microsoft.azure.toolkit.ide.appservice.file.AppServiceFileActionsContributor"/>
+        <actions implementation="com.microsoft.azure.toolkit.ide.appservice.function.FunctionAppActionsContributor"/>
+    </extensions>
+</idea-plugin>

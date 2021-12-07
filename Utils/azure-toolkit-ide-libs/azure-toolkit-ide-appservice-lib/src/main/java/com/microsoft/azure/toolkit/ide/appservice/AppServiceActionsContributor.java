@@ -27,6 +27,8 @@ public class AppServiceActionsContributor implements IActionsContributor {
     public static final Action.Id<IAppService<?>> OPEN_IN_BROWSER = Action.Id.of("actions.appservice.open_in_browser");
     public static final Action.Id<IAppService<?>> START_STREAM_LOG = Action.Id.of("actions.appservice.stream_log.start");
     public static final Action.Id<IAppService<?>> STOP_STREAM_LOG = Action.Id.of("actions.appservice.stream_log.stop");
+    public static final Action.Id<IAppService<?>> SSH_INTO_WEBAPP = Action.Id.of("actions.webapp.ssh");
+    public static final Action.Id<IAppService<?>> PROFILE_FLIGHT_RECORD = Action.Id.of("actions.webapp.flight_record");
 
     @Override
     public void registerActions(AzureActionManager am) {
@@ -46,6 +48,16 @@ public class AppServiceActionsContributor implements IActionsContributor {
                 .title(s -> Optional.ofNullable(s).map(r -> title("appservice.close_log_stream.app", ((IAppService) r).name())).orElse(null))
                 .enabled(s -> s instanceof IAppService);
         am.registerAction(STOP_STREAM_LOG, new Action<>(stopStreamLogView));
+
+        final ActionView.Builder profileFlightRecorderView = new ActionView.Builder("Profile Flight Recorder")
+                .title(s -> Optional.ofNullable(s).map(r -> title("webapp.profile_flight_recorder.app", ((IAppService) r).name())).orElse(null))
+                .enabled(s -> s instanceof IAppService<?>);
+        am.registerAction(PROFILE_FLIGHT_RECORD, new Action<>(profileFlightRecorderView));
+
+        final ActionView.Builder sshView = new ActionView.Builder("SSH into Web App")
+                .title(s -> Optional.ofNullable(s).map(r -> title("webapp.connect_ssh.app", ((IAppService) r).name())).orElse(null))
+                .enabled(s -> s instanceof IAppService<?>);
+        am.registerAction(SSH_INTO_WEBAPP, new Action<>(sshView));
     }
 
     @Override

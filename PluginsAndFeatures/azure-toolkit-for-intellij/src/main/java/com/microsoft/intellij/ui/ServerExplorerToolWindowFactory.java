@@ -47,9 +47,11 @@ import com.microsoft.tooling.msservices.serviceexplorer.Node;
 import com.microsoft.tooling.msservices.serviceexplorer.NodeAction;
 import com.microsoft.tooling.msservices.serviceexplorer.RefreshableNode;
 import com.microsoft.tooling.msservices.serviceexplorer.azure.AzureModule;
+import com.microsoft.tooling.msservices.serviceexplorer.azure.function.FunctionModule;
 import com.microsoft.tooling.msservices.serviceexplorer.azure.rediscache.RedisCacheModule;
 import com.microsoft.tooling.msservices.serviceexplorer.azure.storage.StorageModule;
 import com.microsoft.tooling.msservices.serviceexplorer.azure.vmarm.VMArmModule;
+import com.microsoft.tooling.msservices.serviceexplorer.azure.webapp.WebAppModule;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -496,6 +498,7 @@ public class ServerExplorerToolWindowFactory implements ToolWindowFactory, Prope
     }
 
     private boolean isOutdatedModule(Node node) {
-        return node instanceof StorageModule || node instanceof VMArmModule || node instanceof RedisCacheModule;
+        return node instanceof StorageModule || node instanceof VMArmModule || node instanceof RedisCacheModule ||
+                node instanceof WebAppModule || node instanceof FunctionModule;
     }
 }

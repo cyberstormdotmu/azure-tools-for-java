@@ -25,21 +25,14 @@ import java.util.stream.Collectors;
 
 public class WebAppDeploymentSlotsNode extends Node<WebApp> {
     private final WebApp webApp;
-    private final NodeView nodeView;
 
     public WebAppDeploymentSlotsNode(@Nonnull WebApp data) {
         super(data);
         this.webApp = data;
-        this.nodeView = new WebAppDeploymentSlotsNodeView(data);
+        this.view(new WebAppDeploymentSlotsNodeView(data));
         this.actions(WebAppActionsContributor.DEPLOYMENT_SLOTS_ACTIONS);
         this.addChildren(ignore -> webApp.deploymentSlots().stream().sorted(Comparator.comparing(WebAppDeploymentSlot::name)).collect(Collectors.toList()),
                 (slot, slotsNode) -> new Node<>(slot).view(new AzureResourceLabelView<>(slot)).actions(WebAppActionsContributor.DEPLOYMENT_SLOT_ACTIONS));
-    }
-
-    @Nonnull
-    @Override
-    public NodeView view() {
-        return this.nodeView;
     }
 
     static class WebAppDeploymentSlotsNodeView implements NodeView {

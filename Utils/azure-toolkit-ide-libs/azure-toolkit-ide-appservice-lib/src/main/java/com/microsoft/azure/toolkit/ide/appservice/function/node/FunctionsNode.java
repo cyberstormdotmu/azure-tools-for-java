@@ -24,24 +24,17 @@ import java.util.stream.Collectors;
 
 public class FunctionsNode extends Node<FunctionApp> {
     private final FunctionApp functionApp;
-    private final NodeView nodeView;
 
     public FunctionsNode(@Nonnull FunctionApp functionApp) {
         super(functionApp);
         this.functionApp = functionApp;
-        this.nodeView = new FunctionsNodeView(functionApp);
+        this.view(new FunctionsNodeView(functionApp));
         this.actions(FunctionAppActionsContributor.FUNCTIONS_ACTIONS);
         this.addChildren(ignore -> functionApp.listFunctions().stream()
                         .sorted(Comparator.comparing(FunctionEntity::getName)).collect(Collectors.toList()),
                 (function, functionsNode) -> new Node<>(function)
                         .view(new NodeView.Static(function.getName(), "/icons/function-trigger.png"))
                         .actions(FunctionAppActionsContributor.FUNCTION_ACTION));
-    }
-
-    @Nonnull
-    @Override
-    public NodeView view() {
-        return this.nodeView;
     }
 
     static class FunctionsNodeView implements NodeView {

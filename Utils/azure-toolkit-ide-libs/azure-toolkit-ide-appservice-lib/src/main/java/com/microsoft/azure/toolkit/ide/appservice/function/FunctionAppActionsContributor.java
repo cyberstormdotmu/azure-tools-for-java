@@ -65,12 +65,12 @@ public class FunctionAppActionsContributor implements IActionsContributor {
     public void registerActions(AzureActionManager am) {
         final Consumer<FunctionApp> refresh = functionApp -> AzureEventBus.emit("appservice|function.functions.refresh", functionApp);
         final ActionView.Builder refreshView = new ActionView.Builder("Refresh", "/icons/action/refresh.svg")
-                .title(s -> Optional.ofNullable(s).map(r -> title("appservice|function.functions.refresh", ((FunctionApp) r).name())).orElse(null))
+                .title(s -> Optional.ofNullable(s).map(r -> title("function.list_app.app", ((FunctionApp) r).name())).orElse(null))
                 .enabled(s -> s instanceof FunctionApp);
         am.registerAction(REFRESH_FUNCTIONS, new Action<>(refresh, refreshView));
 
         final ActionView.Builder triggerView = new ActionView.Builder("Trigger Function")
-                .title(s -> Optional.ofNullable(s).map(r -> title("appservice|function.function.trigger", ((FunctionEntity) s).getName())).orElse(null))
+                .title(s -> Optional.ofNullable(s).map(r -> title("function.trigger_func.trigger", ((FunctionEntity) s).getName())).orElse(null))
                 .enabled(s -> s instanceof FunctionEntity);
         am.registerAction(TRIGGER_FUNCTION, new Action<>(triggerView));
     }

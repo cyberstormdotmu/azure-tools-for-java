@@ -183,6 +183,7 @@ dependencies {
     compile project(':azure-intellij-plugin-redis')
     compile project(':azure-intellij-plugin-service-explorer')
     compile project(':azure-intellij-plugin-database')
+    compile project(':azure-intellij-plugin-appservice')
     compile (group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.1') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }

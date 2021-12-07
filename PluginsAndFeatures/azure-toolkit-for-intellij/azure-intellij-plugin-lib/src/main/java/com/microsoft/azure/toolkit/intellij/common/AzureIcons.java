@@ -6,7 +6,10 @@
 package com.microsoft.azure.toolkit.intellij.common;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.util.IconLoader;
+import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -14,6 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AzureIcons {
+    public static final String FILE_EXTENSION_ICON_PREFIX = "file/";
+
     private static final Map<String, Icon> icons = new ConcurrentHashMap<>() {
         {
             put("/icons/action/restart.svg", AllIcons.Actions.Restart);
@@ -35,10 +40,25 @@ public class AzureIcons {
     };
 
     public static Icon getIcon(@Nonnull String iconPathOrName, Class<?> clazz) {
+        if (StringUtils.startsWith(iconPathOrName, FILE_EXTENSION_ICON_PREFIX)) {
+            final String fileExtension = StringUtils.substringAfter(iconPathOrName, FILE_EXTENSION_ICON_PREFIX);
+            return getFileTypeIcon(fileExtension);
+        }
         return icons.computeIfAbsent(iconPathOrName, n -> IconLoader.getIcon(n, clazz));
     }
 
     public static Icon getIcon(@Nonnull String iconPathOrName) {
         return icons.computeIfAbsent(iconPathOrName, n -> IconLoader.getIcon(n, AzureIcons.class));
+    }
+
+    private static Icon getFileTypeIcon(final String name) {
+        if (StringUtils.equalsIgnoreCase(name, "root")) {
+            return AllIcons.Nodes.CopyOfFolder;
+        }
+        if (StringUtils.equalsIgnoreCase(name, "folder")) {
+            return AllIcons.Nodes.Folder;
+        }
+        final FileType type = FileTypeManager.getInstance().getFileTypeByExtension(name);
+        return type.getIcon();
     }
 }

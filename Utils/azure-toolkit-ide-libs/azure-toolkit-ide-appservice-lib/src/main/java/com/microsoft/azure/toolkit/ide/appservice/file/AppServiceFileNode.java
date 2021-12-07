@@ -26,16 +26,16 @@ import java.util.stream.Collectors;
 
 public class AppServiceFileNode extends Node<AppServiceFile> {
     public static final String FILE_EXTENSION_ICON_PREFIX = "file/";
+    public static final String SITE_WWWROOT = "/site/wwwroot";
+    public static final String LOG_FILES = "/LogFiles";
 
     private final AppServiceFile file;
     private final IAppService<?> appService;
-    private final NodeView view;
-    private final String label;
 
     public static AppServiceFile getRootFileNodeForAppService(@Nonnull IAppService<?> appService) {
         final AppServiceFile appServiceFile = new AppServiceFile();
         appServiceFile.setName("Files");
-        appServiceFile.setPath("/site/wwwroot");
+        appServiceFile.setPath(SITE_WWWROOT);
         appServiceFile.setMime("inode/directory");
         appServiceFile.setApp(appService);
         return appServiceFile;
@@ -44,7 +44,7 @@ public class AppServiceFileNode extends Node<AppServiceFile> {
     public static AppServiceFile getRootLogNodeForAppService(@Nonnull IAppService<?> appService) {
         final AppServiceFile appServiceFile = new AppServiceFile();
         appServiceFile.setName("Logs");
-        appServiceFile.setPath("/LogFiles");
+        appServiceFile.setPath(LOG_FILES);
         appServiceFile.setMime("inode/directory");
         appServiceFile.setApp(appService);
         return appServiceFile;
@@ -54,17 +54,10 @@ public class AppServiceFileNode extends Node<AppServiceFile> {
         super(data);
         this.file = data;
         this.appService = data.getApp();
-        this.view = new AppServiceFileLabelView(data);
         final String actionGroupId = data.getType() == AppServiceFile.Type.DIRECTORY ?
                 AppServiceFileActionsContributor.APP_SERVICE_DIRECTORY_ACTIONS : AppServiceFileActionsContributor.APP_SERVICE_FILE_ACTIONS;
         this.actions(actionGroupId);
-        this.label = data.getName();
-    }
-
-    @Nonnull
-    @Override
-    public NodeView view() {
-        return this.view;
+        this.view(new AppServiceFileLabelView(data));
     }
 
     @Override
@@ -116,8 +109,10 @@ public class AppServiceFileNode extends Node<AppServiceFile> {
 
         @Override
         public String getIconPath() {
-            return file.getType() == AppServiceFile.Type.DIRECTORY ? "/icons/storagefolder.png" :
-                    FILE_EXTENSION_ICON_PREFIX + FilenameUtils.getExtension(file.getName());
+            final String fileIconName = file.getType() == AppServiceFile.Type.DIRECTORY ?
+                    StringUtils.equalsAnyIgnoreCase(file.getPath(), SITE_WWWROOT, LOG_FILES) ? "root" : "folder" :
+                    FilenameUtils.getExtension(file.getName());
+            return FILE_EXTENSION_ICON_PREFIX + fileIconName;
         }
 
         @Override

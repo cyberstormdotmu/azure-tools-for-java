@@ -72,7 +72,7 @@ public class FunctionNode extends Node implements TelemetryProperties {
     }
 
     @AzureOperation(
-        name = "function.trigger_func.app",
+        name = "function.trigger_func.trigger",
         params = {"this.functionApp.name()"},
         type = AzureOperation.Type.SERVICE
     )
