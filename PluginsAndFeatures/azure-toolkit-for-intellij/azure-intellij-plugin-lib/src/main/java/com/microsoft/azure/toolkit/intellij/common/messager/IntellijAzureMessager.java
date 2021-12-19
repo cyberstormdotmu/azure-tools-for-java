@@ -18,8 +18,6 @@ import com.intellij.util.ThrowableRunnable;
 import com.intellij.util.ui.UIUtil;
 import com.microsoft.azure.toolkit.lib.common.messager.IAzureMessage;
 import com.microsoft.azure.toolkit.lib.common.messager.IAzureMessager;
-import com.microsoft.azure.toolkit.lib.common.task.AzureTask;
-import com.microsoft.azure.toolkit.lib.common.task.AzureTaskContext;
 import com.microsoft.azure.toolkit.lib.common.view.IView;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +27,6 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -68,13 +65,7 @@ public class IntellijAzureMessager implements IAzureMessager {
                 return result[0];
             default:
         }
-        final AzureTask<?> task = AzureTaskContext.current().getTask();
-        final Boolean backgrounded = Optional.ofNullable(task).map(AzureTask::getBackgrounded).orElse(null);
-        if (Objects.equals(backgrounded, Boolean.FALSE) && raw.getType() == IAzureMessage.Type.ERROR) {
-            this.showErrorDialog(raw);
-        } else {
-            this.showNotification(raw);
-        }
+        this.showNotification(raw);
         return true;
     }
 

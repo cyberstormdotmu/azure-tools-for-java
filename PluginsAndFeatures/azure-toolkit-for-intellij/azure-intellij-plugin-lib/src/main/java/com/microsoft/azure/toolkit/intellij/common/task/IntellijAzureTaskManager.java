@@ -5,7 +5,6 @@
 
 package com.microsoft.azure.toolkit.intellij.common.task;
 
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
@@ -13,7 +12,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTask;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import lombok.RequiredArgsConstructor;
@@ -87,7 +85,6 @@ public class IntellijAzureTaskManager extends AzureTaskManager {
     protected void doRunInBackgroundableModal(final Runnable runnable, final AzureTask<?> task) {
         final PerformInBackgroundOption foreground = PerformInBackgroundOption.DEAF;
         // refer https://jetbrains.org/intellij/sdk/docs/basics/disposers.html
-        final Disposable disposable = Disposer.newDisposable();
         // refer https://github.com/JetBrains/intellij-community/commit/d7ac4e133fec7e4c1e63f4c1d7dda65e25258b81 ide.background.tasks has been removed
         final String title = StringUtils.capitalize(Objects.requireNonNull(task.getTitle()).toString());
         final Task.Backgroundable modalTask = new Task.Backgroundable((Project) task.getProject(), title, task.isCancellable(), foreground) {
@@ -96,7 +93,6 @@ public class IntellijAzureTaskManager extends AzureTaskManager {
                 task.setMonitor(new IntellijTaskMonitor(progressIndicator));
                 task.setBackgrounded(false);
                 runnable.run();
-                Disposer.dispose(disposable);
             }
 
             @Override
