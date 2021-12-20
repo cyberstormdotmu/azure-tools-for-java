@@ -40,7 +40,7 @@ public class CreateVirtualMachineAction {
 
     public static void createVirtualMachine(final DraftVirtualMachine draft, final VMCreationDialog dialog) {
         AzureTaskManager.getInstance().runInBackground(AzureOperationBundle.title("vm.create_vm.vm", draft.getName()), () -> {
-            AzureTelemetry.getActionContext().setProperty("subscriptionId", draft.getSubscriptionId());
+            AzureTelemetry.getContext().getActionParent().setProperty("subscriptionId", draft.getSubscriptionId());
             try {
                 new CreateVirtualMachineTask(draft).execute();
             } catch (final Exception e) {

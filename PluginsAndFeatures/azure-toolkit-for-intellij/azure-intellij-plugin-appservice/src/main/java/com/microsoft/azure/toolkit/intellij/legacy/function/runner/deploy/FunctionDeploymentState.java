@@ -99,7 +99,7 @@ public class FunctionDeploymentState extends AzureRunProfileState<FunctionApp> {
         FunctionAppService.getInstance().deployFunctionApp(functionApp, stagingFolder);
         // list triggers after deployment
         listHTTPTriggerUrls(functionApp);
-        operation.trackProperties(AzureTelemetry.getActionContext().getProperties());
+        operation.trackProperties(AzureTelemetry.getContext().getActionParent().getProperties());
         return functionApp;
     }
 

@@ -41,7 +41,7 @@ public class CreateStorageAccountAction {
 
     public static StorageAccount createStorageAccount(StorageAccountConfig config) {
         final String subscriptionId = config.getSubscription().getId();
-        AzureTelemetry.getActionContext().setProperty("subscriptionId", subscriptionId);
+        AzureTelemetry.getContext().getActionParent().setProperty("subscriptionId", subscriptionId);
         if (config.getResourceGroup() instanceof Draft) { // create resource group if necessary.
             final ResourceGroup newResourceGroup = Azure.az(AzureGroup.class)
                     .subscription(subscriptionId).create(config.getResourceGroup().getName(), config.getRegion().getName());

@@ -83,13 +83,13 @@ public class FunctionAppService {
     }
 
     public FunctionApp createFunctionApp(final FunctionAppConfig config) {
-        AzureTelemetry.getActionContext().setProperty(CREATE_NEW_FUNCTION_APP, String.valueOf(true));
+        AzureTelemetry.getContext().getActionParent().setProperty(CREATE_NEW_FUNCTION_APP, String.valueOf(true));
         final ResourceGroup resourceGroup = getOrCreateResourceGroup(config);
         final AppServicePlan appServicePlan = getOrCreateAppServicePlan(config);
         AzureMessager.getMessager().info(String.format(CREATE_FUNCTION_APP, config.getName()));
         final Map<String, String> appSettings = getAppSettings(config);
         // get/create ai instances only if user didn't specify ai connection string in app settings
-        AzureTelemetry.getActionContext().setProperty(DISABLE_APP_INSIGHTS, String.valueOf(config.getMonitorConfig().getApplicationInsightsConfig() == null));
+        AzureTelemetry.getContext().getActionParent().setProperty(DISABLE_APP_INSIGHTS, String.valueOf(config.getMonitorConfig().getApplicationInsightsConfig() == null));
         bindApplicationInsights(appSettings, config);
         final FunctionApp result = Azure.az(AzureAppService.class).subscription(config.getSubscription())
                 .functionApp(resourceGroup.getName(), config.getName()).create()
@@ -132,7 +132,7 @@ public class FunctionAppService {
             return Azure.az(AzureGroup.class).subscription(config.getSubscription()).getByName(config.getResourceGroup().getName());
         } catch (final ManagementException e) {
             AzureMessager.getMessager().info(String.format(CREATE_RESOURCE_GROUP, config.getResourceGroup().getName(), config.getRegion().getName()));
-            AzureTelemetry.getActionContext().setProperty(CREATE_NEW_RESOURCE_GROUP, String.valueOf(true));
+            AzureTelemetry.getContext().getActionParent().setProperty(CREATE_NEW_RESOURCE_GROUP, String.valueOf(true));
             final ResourceGroup result = Azure.az(AzureGroup.class).subscription(config.getSubscription())
                     .create(config.getResourceGroup().getName(), config.getRegion().getName());
             AzureMessager.getMessager().info(String.format(CREATE_RESOURCE_GROUP_DONE, result.getName()));
@@ -147,7 +147,7 @@ public class FunctionAppService {
                 .appServicePlan(servicePlanGroup, servicePlanName);
         if (!appServicePlan.exists()) {
             AzureMessager.getMessager().info(CREATE_APP_SERVICE_PLAN);
-            AzureTelemetry.getActionContext().setProperty(CREATE_NEW_APP_SERVICE_PLAN, String.valueOf(true));
+            AzureTelemetry.getContext().getActionParent().setProperty(CREATE_NEW_APP_SERVICE_PLAN, String.valueOf(true));
             appServicePlan.create()
                     .withName(servicePlanName)
                     .withResourceGroup(servicePlanGroup)
@@ -203,7 +203,7 @@ public class FunctionAppService {
     public void deployFunctionApp(final FunctionApp functionApp, final File stagingFolder) throws IOException {
         AzureMessager.getMessager().info(DEPLOY_START);
         final FunctionDeployType deployType = getDeployType(functionApp);
-        AzureTelemetry.getActionContext().setProperty(DEPLOYMENT_TYPE, deployType.name());
+        AzureTelemetry.getContext().getActionParent().setProperty(DEPLOYMENT_TYPE, deployType.name());
         functionApp.deploy(packageStagingDirectory(stagingFolder), deployType);
         if (!StringUtils.equalsIgnoreCase(functionApp.state(), RUNNING)) {
             functionApp.start();

@@ -93,7 +93,7 @@ public class CreateFunctionAppAction {
                 indicator.setIndeterminate(true);
                 return functionAppService.createFunctionApp(config);
             } finally {
-                operation.trackProperties(AzureTelemetry.getActionContext().getProperties());
+                operation.trackProperties(AzureTelemetry.getContext().getActionParent().getProperties());
                 operation.complete();
             }
         });
