@@ -18,10 +18,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
+import com.microsoft.azure.toolkit.lib.common.form.AzureValidationInfo;
 
 public class AzureFileInput extends Composite implements AzureForm<String> {
 
@@ -56,6 +56,15 @@ public class AzureFileInput extends Composite implements AzureForm<String> {
         textInput.setLabeledBy(label);
     }
     
+    public boolean isUserInput() {
+        return textInput.isUserInput();
+    }
+
+    @Override
+    public void addValidator(Validator validator) {
+        textInput.addValidator(validator);
+    }
+
     protected void setupUI() {
         final GridLayout gridLayout = new GridLayout(2, false);
         gridLayout.marginHeight = 0;
@@ -69,6 +78,7 @@ public class AzureFileInput extends Composite implements AzureForm<String> {
         textInput.addValueChangedListener(value -> {
             AzureFileInput.this.fireValueChangedEvent(value);
         });
+        textInput.addValidator(this::validateInput);
 
         button = new Button(this, SWT.PUSH);
         button.setText("Browse");
@@ -92,8 +102,20 @@ public class AzureFileInput extends Composite implements AzureForm<String> {
         }
         final String result = dialog.open();
         if (StringUtils.isNotEmpty(result)) {
-            textInput.setValue(result);
+            textInput.setValue(result, true);
             AzureFileInput.this.fireValueChangedEvent(result);
+        }
+    }
+
+    protected AzureValidationInfo validateInput() {
+        final String value = this.getValue();
+        if (StringUtils.isEmpty(value)) {
+            return this.isRequired() ? AzureValidationInfo.error("Value could not to be empty", textInput)
+                    : AzureValidationInfo.ok(textInput);
+        } else {
+            final File file = new File(value);
+            return file.exists() ? AzureValidationInfo.ok(textInput)
+                    : AzureValidationInfo.error("Target file does not exists", textInput);
         }
     }
 

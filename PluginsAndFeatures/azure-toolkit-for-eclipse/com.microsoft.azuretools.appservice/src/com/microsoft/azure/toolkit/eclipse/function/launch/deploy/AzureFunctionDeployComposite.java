@@ -139,8 +139,11 @@ public class AzureFunctionDeployComposite extends Composite implements AzureForm
     }
 
     private void setLocalSettingsJsonByProject(final IJavaProject project) {
+        if (project == null) {
+            return;
+        }
         final IFile file = project.getProject().getFile("local.settings.json");
-        if (file.exists() && StringUtils.isEmpty(this.txtLocalSettingsJson.getValue())) {
+        if (file.exists() && !this.txtLocalSettingsJson.isUserInput()) {
             this.txtLocalSettingsJson.setValue(file.getLocation().toFile().toString());
         }
     }
