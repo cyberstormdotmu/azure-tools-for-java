@@ -9,6 +9,7 @@ import com.microsoft.azure.toolkit.ide.appservice.model.AppServiceConfig;
 import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.account.IAzureAccount;
+import com.microsoft.azure.toolkit.lib.appservice.config.RuntimeConfig;
 import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;
 import com.microsoft.azure.toolkit.lib.appservice.model.PricingTier;
 import com.microsoft.azure.toolkit.lib.appservice.model.Runtime;
@@ -26,6 +27,7 @@ import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -61,6 +63,22 @@ public class WebAppConfig extends AppServiceConfig {
                 .runtime(WebAppConfig.DEFAULT_RUNTIME)
                 .pricingTier(WebAppConfig.DEFAULT_PRICING_TIER)
                 .region(region).build();
+    }
+
+    public static com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig convertToTaskConfig(WebAppConfig config) {
+        final com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig result =
+                new com.microsoft.azure.toolkit.lib.appservice.config.AppServiceConfig();
+        result.appName(config.getName());
+        result.resourceGroup(config.getResourceGroupName());
+        result.subscriptionId(config.getSubscriptionId());
+        result.pricingTier(Optional.ofNullable(config.getServicePlan()).map(AppServicePlanEntity::getPricingTier).orElseGet(config::getPricingTier));
+        result.region(config.getRegion());
+        result.servicePlanName(Optional.ofNullable(config.getServicePlan()).map(AppServicePlanEntity::getName).orElse(null));
+        result.servicePlanResourceGroup(Optional.ofNullable(config.getServicePlan())
+                .map(AppServicePlanEntity::getResourceGroup).orElseGet(config::getResourceGroupName));
+        Optional.ofNullable(config.getRuntime()).ifPresent(runtime -> result.runtime(
+                new RuntimeConfig().os(runtime.getOperatingSystem()).javaVersion(runtime.getJavaVersion()).webContainer(runtime.getWebContainer())));
+        return result;
     }
 
     public static WebAppConfig fromRemote(WebApp webApp) {

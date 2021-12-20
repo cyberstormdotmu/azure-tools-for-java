@@ -21,7 +21,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureComboBox;
-import com.microsoft.azure.toolkit.eclipse.common.component.Draft;
+import com.microsoft.azure.toolkit.ide.common.model.Draft;
+import com.microsoft.azure.toolkit.ide.common.model.DraftResourceGroup;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.common.model.ResourceGroup;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
