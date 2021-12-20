@@ -6,7 +6,8 @@
 package com.microsoft.azure.toolkit.eclipse.appservice.serviceplan;
 
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureComboBox;
-import com.microsoft.azure.toolkit.eclipse.common.component.Draft;
+import com.microsoft.azure.toolkit.ide.appservice.webapp.model.DraftServicePlan;
+import com.microsoft.azure.toolkit.ide.common.model.Draft;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.appservice.AzureAppService;
 import com.microsoft.azure.toolkit.lib.appservice.entity.AppServicePlanEntity;

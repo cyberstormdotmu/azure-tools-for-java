@@ -7,6 +7,7 @@ package com.microsoft.azure.toolkit.eclipse.appservice.serviceplan;
 
 import com.microsoft.azure.toolkit.eclipse.appservice.PricingTierCombobox;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureTextInput;
+import com.microsoft.azure.toolkit.ide.appservice.webapp.model.DraftServicePlan;
 import com.microsoft.azure.toolkit.eclipse.common.component.AzureDialog;
 import com.microsoft.azure.toolkit.lib.appservice.model.PricingTier;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
@@ -88,7 +89,7 @@ public class ServicePlanCreationDialog extends AzureDialog<DraftServicePlan> imp
 
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            this.data = new DraftServicePlan(text.getText(), pricingTierCombobox.getValue());
+            this.data = new DraftServicePlan(null, text.getText(), null, null, pricingTierCombobox.getValue());
         }
         super.buttonPressed(buttonId);
     }
