@@ -7,6 +7,7 @@ package com.microsoft.azure.toolkit.eclipse.functionapp;
 
 import com.azure.resourcemanager.resources.fluentcore.arm.ResourceId;
 import com.microsoft.azure.toolkit.eclipse.appservice.property.AppServicePropertyEditorInput;
+import com.microsoft.azure.toolkit.eclipse.function.launch.deploy.DeployAzureFunctionAction;
 import com.microsoft.azure.toolkit.eclipse.functionapp.creation.CreateFunctionAppHandler;
 import com.microsoft.azure.toolkit.eclipse.functionapp.logstreaming.FunctionAppLogStreamingHandler;
 import com.microsoft.azure.toolkit.eclipse.functionapp.property.FunctionAppPropertyEditor;
@@ -27,6 +28,7 @@ import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azuretools.core.utils.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IEditorDescriptor;
@@ -59,6 +61,15 @@ public class EclipseFunctionAppActionsContributor implements IActionsContributor
                     openEditor(input, descriptor);
                 });
         am.registerHandler(ResourceCommonActionsContributor.SHOW_PROPERTIES, isFunctionApp, openWebAppPropertyViewHandler);
+
+        final BiConsumer<IAzureBaseResource<?, ?>, Object> deployHandler = (c, e) -> AzureTaskManager.getInstance().runLater(() -> {
+            try {
+                DeployAzureFunctionAction.deployFunctionAppToAzure((FunctionApp) c);
+            } catch (CoreException exception) {
+                AzureMessager.getMessager().error(exception);
+            }
+        });
+        am.registerHandler(ResourceCommonActionsContributor.DEPLOY, isFunctionApp, deployHandler);
 
         final BiPredicate<IAppService<?>, Object> logStreamingPredicate = (r, e) -> r instanceof IFunctionAppBase<?>;
         final BiConsumer<IAppService<?>, Object> startLogStreamingHandler = (c, e) -> FunctionAppLogStreamingHandler
